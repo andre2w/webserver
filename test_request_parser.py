@@ -33,7 +33,8 @@ class TestRequestParser(unittest.TestCase):
             'Content-Type': 'application/json',
             'Content-Length': '18'
         }
-        self.assertDictEqual(expected,result['headers'])
+        for key, value in expected.items():
+            self.assertEqual(value,result['headers'][key])
 
     def test_parse_includes_body(self):
         result = parse_request(self.request)

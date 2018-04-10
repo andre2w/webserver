@@ -14,6 +14,11 @@ while "\r\n" not in buffer:
     buffer += str(clientsocket.recv(4096),'ascii')
 
 print(parse_request(buffer))
+
+clientsocket.send('HTTP/1.1 200 OK \r\n'.encode('ascii'))
+clientsocket.send('\r\n'.encode('ascii'))
+clientsocket.send('YEAH'.encode('ascii'))
+
 clientsocket.close()
 sock.close()
 

@@ -1,13 +1,13 @@
 def parse_request(request):
     """Parse the entire request request to a dict"""
     request_lines = request.split('\r\n\r\n')
+    
+    # Get the first line with the request info 
+    # and parse the rest has headers
     header_lines  = request_lines[0].split('\r\n')
-    request_info = __parse_request_info(header_lines.pop(0))
-   
-    headers = {}    
-    for line in header_lines:
-        headers.update (__parse_headers(line))
-   
+    request_info  = __parse_request_info(header_lines[0])  
+    headers       = __parse_headers(header_lines[1:])
+
     request_info['headers'] = headers
     request_info['body']    = request_lines[1]
     return request_info
@@ -25,7 +25,11 @@ def __parse_request_info(line):
         'version': request_info[2]
     }
 
-def __parse_headers(line):
+def __parse_headers(lines):
     """Parse all the headers into a dict"""
-    splitted_line = line.split(':',1)
-    return  { splitted_line[0].strip(): splitted_line[1].strip() }
+    headers = {}
+    for line in lines:
+        splitted_line = line.split(':',1)
+        headers[splitted_line[0]] = splitted_line[1].strip()
+        
+    return headers 
