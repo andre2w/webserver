@@ -6,7 +6,15 @@ from request_parser import parse_request
 class TestRequestParser(unittest.TestCase):
 
     def setUp(self):
-        self.request = 'POST / HTTP/1.1\r\nHost: localhost:5000\r\nUser-Agent: curl/7.47.0\r\nAccept: */*\r\nContent-Type: application/json\r\nContent-Length: 18\r\n\r\n{ "json": "info" }'
+        self.request =  'POST / HTTP/1.1\r\n'
+        self.request += 'Host: localhost:5000\r\n'
+        self.request += 'User-Agent: curl/7.47.0\r\n'
+        self.request += 'Accept: */*\r\n'
+        self.request += 'Content-Type: application/json\r\n'
+        self.request += 'Content-Length: 18\r\n'
+        self.request += 'Cookie: cookie1=value, httponly=false; cookie2=othervalue\r\n'
+        self.request += '\r\n'
+        self.request += '{ "json": "info" }'
 
     def test_parse_returns_method(self):
         result = parse_request(self.request)
@@ -44,5 +52,15 @@ class TestRequestParser(unittest.TestCase):
         result = parse_request(self.request)
         expected = '{ "json": "info" }'
         self.assertEqual(expected,result['body'])        
+
+    def test_parse_returns_cookies(self):
+        result = parse_request(self.request)
+        self.assertTrue('cookies' in result)
+
+    def test_parse_returns_cookies_content(self):
+        result = parse_request(self.request)
+        self.assertEqual('value',result['cookies']['cookie1']['value'])
+        self.assertEqual('false',result['cookies']['cookie1']['httponly'])
+        self.assertEqual('othervalue',result['cookies']['cookie2']['value'])
 
 unittest.main() 
