@@ -1,4 +1,8 @@
 import unittest
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../server')))
+
 from response_builder import build_info, build_headers, create_cookie, build_cookies, build_body
 
 class TestResponseBuilder(unittest.TestCase):
